@@ -17,7 +17,7 @@ from resources.lib.utils import zip_tofile, unzip_fromfile, try_encode, try_deco
 from resources.lib.dialogselect import DialogSelect
 from xml.dom.minidom import parse
 from datetime import datetime
-
+from shutil import copyfile
 
 class BackupRestore:
     '''Main BackupRestore class providing methods to backup and restore skin settings'''
@@ -61,11 +61,18 @@ class BackupRestore:
         zip_tofile(temp_path, zip_temp)
 
         # copy file to destination - wait until it's really copied
+        xbmc.log("Skin Helper Backup --> Saving Backup to %s" % backup_file, level=xbmc.LOGINFO)
         copy_file(zip_temp, backup_file, True)
+        if not xbmcvfs.exists(backup_file):
+           if not silent:
+              raise IOError('Failed to copy ' + zip_temp + " to " + backup_file)
 
         # cleanup temp
         recursive_delete_dir(temp_path)
         xbmcvfs.delete(zip_temp)
+
+        # clean old backups
+        self.clean_oldbackups()
 
         # show success message
         if not silent:
