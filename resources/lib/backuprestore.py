@@ -27,9 +27,9 @@ class BackupRestore:
         '''Initialization and main code run'''
         self.addon = xbmcaddon.Addon(ADDON_ID)
 
-    def __del__(self):
-        '''Cleanup Kodi Cpython instances on exit'''
-        del self.addon
+    #def __del__(self):
+    #    '''Cleanup Kodi Cpython instances on exit'''
+    #    del self.addon
 
     def backup(self, filters=None, backup_file="", silent=False):
         '''create skin backup'''
@@ -73,6 +73,7 @@ class BackupRestore:
 
         # clean old backups
         self.clean_oldbackups()
+        self.create_temp()
 
         # show success message
         if not silent:
